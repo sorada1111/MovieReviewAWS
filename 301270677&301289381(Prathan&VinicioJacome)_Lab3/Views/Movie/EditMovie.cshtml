@@ -1,0 +1,184 @@
+﻿@model _301270677_301289381_Prathan_VinicioJacome__Lab3.Models.MovieViewModel
+
+@{
+    ViewData["Title"] = "Edit Movie Details";
+    var currentUsername = Context.Session.GetString("Username");
+    var currentUserId = Context.Session.GetString("UserId");
+
+}
+@if (currentUserId != null && currentUsername != null)
+{
+    <div class="user-info">
+        <span class="username">Hello, @currentUsername</span>
+        <span class="user-id">(@currentUserId)</span>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">Edit Movie Details</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data" asp-action="EditMovie">
+                            <input type="hidden" name="UserID" value="@currentUserId" />
+                            <input type="hidden" name="MovieID" value="@Model.MovieID" />
+
+                           
+                            <div class="mb-3">
+                                <label class="form-label" for="title">Title</label>
+                                <input type="text" class="form-control" id="title" name="Title" value="@Model.Title" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="genre">Genre</label>
+                                <select class="form-control" id="genre" name="Genre">
+                                    @foreach (var genre in ViewBag.Genres as List<string>)
+                                    {
+                                        @if (Model.Genre == genre)
+                                        {
+                                            <option value="@genre" selected>@genre</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@genre">@genre</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="description">Description</label>
+                                <textarea class="form-control" id="description" name="Description" required>@Model.Description</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Directors</label>
+                                <div id="directorInputs">
+                                    @if (Model.Directors != null)
+                                    {
+                                        @for (var i = 0; i < Model.Directors.Count; i++)
+                                        {
+                                            <div class="input-group mb-2">
+                                                <input type="text" class="form-control" name="Directors[@i]" value="@Model.Directors[i]" required>
+                                                <button type="button" class="btn btn-outline-success" onclick="addDirector()">+</button>
+                                                <button type="button" class="btn btn-outline-danger" onclick="removeDirector(this)">-</button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Actors</label>
+                                <div id="actorInputs">
+                                    @if (Model.Actors != null)
+                                    {
+                                        @for (var i = 0; i < Model.Actors.Count; i++)
+                                        {
+                                            <div class="input-group mb-2">
+                                                <input type="text" class="form-control" name="Actors[@i]" value="@Model.Actors[i]" required>
+                                                <button type="button" class="btn btn-outline-success" onclick="addActor()">+</button>
+                                                <button type="button" class="btn btn-outline-danger" onclick="removeActor(this)">-</button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label class="form-label" for="movieFile">Movie File</label>
+                                <input type="file" class="form-control" id="movieFile" name="MovieFile">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="imageFile">Image File</label>
+                                <input type="file" class="form-control" id="imageFile" name="ImageFile">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Update Movie</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function addDirector() {
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control';
+            input.name = 'Directors[]';
+            input.required = true;
+
+            const addButton = document.createElement('button');
+            addButton.type = 'button';
+            addButton.className = 'btn btn-outline-success';
+            addButton.textContent = '+';
+            addButton.onclick = function () { addDirector() };
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'btn btn-outline-danger ml-2';
+            removeButton.textContent = '-';
+            removeButton.onclick = function () { removeDirector(removeButton) };
+
+            div.appendChild(input);
+            div.appendChild(addButton);
+            div.appendChild(removeButton);
+
+            document.getElementById('directorInputs').appendChild(div);
+        }
+
+        function removeDirector(button) {
+            const inputGroup = button.closest('.input-group');
+            if (inputGroup.parentNode.childElementCount > 1) {
+                inputGroup.remove();
+            }
+        }
+
+        function addActor() {
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control';
+            input.name = 'Actors[]';
+            input.required = true;
+
+            const addButton = document.createElement('button');
+            addButton.type = 'button';
+            addButton.className = 'btn btn-outline-success';
+            addButton.textContent = '+';
+            addButton.onclick = function () { addActor() };
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'btn btn-outline-danger ml-2';
+            removeButton.textContent = '-';
+            removeButton.onclick = function () { removeActor(removeButton) };
+
+            div.appendChild(input);
+            div.appendChild(addButton);
+            div.appendChild(removeButton);
+
+            document.getElementById('actorInputs').appendChild(div);
+        }
+
+        function removeActor(button) {
+            const inputGroup = button.closest('.input-group');
+            if (inputGroup.parentNode.childElementCount > 1) {
+                inputGroup.remove();
+            }
+        }
+    </script>
+}

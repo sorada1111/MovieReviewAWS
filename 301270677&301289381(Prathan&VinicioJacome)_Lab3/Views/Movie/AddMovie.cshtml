@@ -1,0 +1,188 @@
+﻿@model _301270677_301289381_Prathan_VinicioJacome__Lab3.Models.MovieViewModel
+
+@{
+    ViewData["Title"] = "Add Movie";
+    var currentUsername = Context.Session.GetString("Username");
+    var currentUserId = Context.Session.GetString("UserId");
+
+}
+
+@if (currentUserId != null && currentUsername != null)
+{
+    <div class="user-info">
+        <span class="username">Hello, @currentUsername</span>
+        <span class="user-id">(@currentUserId)</span>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">Add New Movie</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data" asp-action="AddMovie">
+                            <!-- Include this hidden field -->
+                            <input type="hidden" name="UserID" value="@currentUserId" />
+                           
+
+                            <!-- Title -->
+                            <div class="mb-3">
+                                <label class="form-label" for="title">Title</label>
+                                <input type="text" class="form-control" id="title" name="Title" required>
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+                            <!-- Genre -->
+                            <div class="mb-3">
+                                <label class="form-label" for="genre">Genre</label>
+                                <select class="form-control" id="genre" name="Genre" required>
+                                    <option value="">Select Genre</option>
+                                    @foreach (var genre in ViewBag.Genres)
+                                    {
+                                        <option value="@genre">@genre</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Genre" class="text-danger"></span>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-3">
+                                <label class="form-label" for="description">Description</label>
+                                <textarea class="form-control" id="description" name="Description" required></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <!-- Directors -->
+                            <div class="mb-3">
+                                <label class="form-label">Directors</label>
+                                <div id="directorInputs">
+                                    <div class="input-group mb-2">
+                                        <input type="text" class="form-control" name="Directors[0]" required>
+                                        <button type="button" class="btn btn-outline-success" id="addDirector">+</button>
+                                        <button type="button" class="btn btn-outline-danger" onclick="removeElement(this)">-</button>
+                                        <span asp-validation-for="Directors" class="text-danger"></span>
+                                    </div>
+                                </div>
+                               
+                            </div>
+
+                            <!-- Actors -->
+                            <div class="mb-3">
+                                <label class="form-label">Actors</label>
+                                <div id="actorInputs">
+                                    <div class="input-group mb-2">
+                                        <input type="text" class="form-control" name="Actors[0]" required>
+                                        <button type="button" class="btn btn-outline-success" id="addActor">+</button>
+                                        <button type="button" class="btn btn-outline-danger" onclick="removeElement(this)">-</button>
+                                        <span asp-validation-for="Actors" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                            <!-- Movie File -->
+                            <div class="mb-3">
+                                <label class="form-label" for="movieFile">Movie File</label>
+                                <input type="file" class="form-control" id="movieFile" name="MovieFile" required>
+                                <span asp-validation-for="MovieFile" class="text-danger"></span>
+                            </div>
+
+                            <!-- Image File -->
+                            <div class="mb-3">
+                                <label class="form-label" for="imageFile">Image File</label>
+                                <input type="file" class="form-control" id="imageFile" name="ImageFile" required>
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary">Add Movie</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+
+            function createInputGroup(name) {
+                let parentElement;
+                if (name === 'Directors') {
+                    parentElement = document.getElementById('directorInputs');
+                } else if (name === 'Actors') {
+                    parentElement = document.getElementById('actorInputs');
+                }
+
+                // Calculate the current index based on existing input elements
+                const currentIndex = parentElement.querySelectorAll('input').length;
+
+                const div = document.createElement('div');
+                div.className = 'input-group mb-2';
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'form-control';
+                input.name = name + '[' + currentIndex + ']';
+                input.required = true;
+
+                const addButton = document.createElement('button');
+                addButton.type = 'button';
+                addButton.className = 'btn btn-outline-success';
+                addButton.textContent = '+';
+                addButton.onclick = function () { addElement(name) };
+
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.className = 'btn btn-outline-danger ml-2';
+                removeButton.textContent = '-';
+                removeButton.onclick = function () { removeElement(removeButton) };
+
+                div.appendChild(input);
+                div.appendChild(addButton);
+                div.appendChild(removeButton);
+
+                return div;
+            }
+
+            function addElement(name) {
+                let parentElement;
+                if (name === 'Directors') {
+                    parentElement = document.getElementById('directorInputs');
+                } else if (name === 'Actors') {
+                    parentElement = document.getElementById('actorInputs');
+                }
+
+                parentElement.appendChild(createInputGroup(name));
+            }
+
+            document.getElementById('addDirector').addEventListener('click', function () {
+                addElement('Directors');
+            });
+
+            document.getElementById('addActor').addEventListener('click', function () {
+                addElement('Actors');
+            });
+        });
+
+        function removeElement(button) {
+            const inputGroup = button.closest('.input-group');
+            const parent = inputGroup.parentNode;
+            if (parent.childElementCount > 1) {
+                inputGroup.remove();
+            }
+
+            // Optional: After removal, you might want to re-index the remaining inputs for cleaner indices.
+            const inputs = parent.querySelectorAll('input');
+            inputs.forEach((input, index) => {
+                input.name = input.name.replace(/\[\d+\]/, '[' + index + ']');
+            });
+        }
+    </script>
+}
+
+

@@ -1,0 +1,21 @@
+
+{
+    "region" : "ca-central-1",
+    "configuration" : "Debug",
+    "framework"     : "net6.0",
+    "self-contained" : false,
+    "application"    : "PrathanVinicioJacomeLab3",
+    "environment"    : "PrathanVinicioJacomeLab3-dev",
+    "app-path"       : "/",
+    "iis-website"    : "Default Web Site",
+    "enable-xray"    : false,
+    "enhanced-health-type" : "basic",
+    "additional-options"   : "\"aws:autoscaling:launchconfiguration,SecurityGroups\"=\"sg-0192f79c61ff09120,sg-036b9f3c1902f6105\";\"aws:ec2:vpc,Subnets\"=\"subnet-0c7b7d47f910b9c83\"",
+    "solution-stack"       : "64bit Windows Server Core 2019 v2.12.0 running IIS 10.0",
+    "environment-type"     : "SingleInstance",
+    "cname"                : "prathanviniciojacomelab3-dev",
+    "instance-type"        : "t2.micro",
+    "key-pair"             : "KeyPair4sec002",
+    "instance-profile"     : "aws-elasticbeanstalk-ec2-role",
+    "service-role"         : "aws-elasticbeanstalk-service-role"
+}
